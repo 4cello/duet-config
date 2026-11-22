@@ -29,17 +29,38 @@ M906 X1400 Y1400 Z800 A800 I30 S30            ; set motor currents (mA), motor i
 M564 S0 H0                                    ; Allow movement without homing
 
 ; Axis Limits
-M208 X0 Y0 Z0 S1                           ; set axis minima
+M208 X0 Y0 Z0 S1                              ; set axis minima
 M208 X482 Y445 Z102 S0                        ; set axis maxima
 
 ; Endstops
 M574 X2 S1 P"!^temp0"
 M574 Y2 S1 P"!^temp2+!^temp1"
 M574 Z2 S1 P"!^io3.in"
-;M574 U1 S2 P"!^io5.in"
+;M574 A1 S1 P"!^io6.in"
 ;M574 Z1 S1 P"!^io6.in"
 
-M558 P5 C"!io4.in" K0
+global skip_pause = false
+global skip_resume = false
+global safe_travel_height = move.axes[2].max - 2
+
+global workpiece_probe = 0
+global toolsetter_probe = 1
+
+global toolsetter_x = 0
+global toolsetter_y = 0
+global toolsetter_z = 23.85
+
+global toolsetter_travel_feed = 3000
+global toolsetter_retract = 5
+
+global toolchange_x = 30
+global toolchange_y = 30
+global toolchange_z = global.safe_travel_height 
+
+M558 K{global.workpiece_probe}  P8 C"!io4.in"                          ; Z probe
+M558 K{global.toolsetter_probe} P8 C"io5.in" F300:60                  ; Tool length sensor
+G31 K{global.toolsetter_probe} P500 Z{global.toolsetter_z}
+
 
 ; Z-Probe
 ;M558 P5 C"!^io3.in" F500 H10                  ; set Z probe type to switch and the dive height + speeds
