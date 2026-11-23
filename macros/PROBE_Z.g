@@ -1,7 +1,8 @@
-if {move.axes[2].machinePosition < sensors.probes[0].triggerHeight}
-  G92 Z{sensors.probes[0].triggerHeight + 5}
-G30 S-1 ; move down until probe triggers
-G92 Z{sensors.probes[0].triggerHeight} ; adjust Z offset
+; TODO: restore speed
+
+G38.2 K{global.workpiece_probe} Z-100 F100
+G10 L20 Z0
+
 G91
-G1 Z10    ; move 10mm up
+G1 Z5 H2
 G90

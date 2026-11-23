@@ -14,7 +14,7 @@ G53 G0 Z{global.toolchange_z}
 if {exists(param.T)}
     ; Tool given
     set var.tool = param.T
-elif {state.currentTool >= -1}
+elif {state.currentTool >= 0}
     ; Tool was selected previously (and exists)
     set var.tool = state.currentTool
 else
@@ -41,10 +41,11 @@ M98 P"/macros/ToolLength.g"
 ; Move back to previous position
 G53 G0 Z{global.safe_travel_height}
 G0 R5 X0 Y0
-G0 R5 Z0
+; G0 R5 Z0
 
 set global.skip_pause = true
 set global.skip_resume = true
 M400
-; Pause job
-M25
+; Pause job to enable spindle, if applicable
+if {state.status == "processing"}
+    M25
